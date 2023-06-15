@@ -1,0 +1,33 @@
+Messages:
+  already-set:
+    - '&cVocê já possui uma loja.'
+  set:
+    - '&aVocê definiu a localização da sua loja com sucesso!'
+  not-owner:
+    - '&cVocê precisa estar no seu terreno para definir a localização da sua loja.'
+  no-store:
+    - '&cEste jogador não possui uma loja.'
+  own-store:
+    - '&aSeja novamente bem-vindo à sua loja.'
+  visit:
+    - ''
+    - '&aSeja bem-vindo à loja de <user>!'
+    - '&aBoas compras!'
+    - ''
+    - ''
+  remove:
+    - '&aVocê removeu a localização da sua loja com sucesso!'
+  self-evaluation:
+    - '&cVocê não pode avaliar sua própria loja.'
+  evaluation:
+    - ''
+    - '&aMuito obrigado!'
+    - '&aVocê avaliou a loja de <user> com uma estrela, totalizando &f<stars>&a.'
+    - ''
+    - ' &e&lDICA: §eVocê pode voltar a avaliar uma loja em 24 horas.'
+    - ''
+  evaluation-time:
+    - '&cVocê só pode voltar a avaliar uma loja em <time>.'
+  no-store-remove:
+    - '&cVocê não possui uma loja para remover a localização.'
+

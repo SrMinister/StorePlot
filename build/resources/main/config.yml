@@ -1,0 +1,29 @@
+information:
+  material: '397:3'
+  head-texture: 'd01afe973c5482fdc71e6aa10698833c79c437f21308ea9a1a095746ec274a0f'
+  display-name: '&eInformações'
+  lore:
+    - '&7Para colocar a sua loja aqui,'
+    - '&7você tem de definir a sua'
+    - ''
+    - '&7localização com &f/loja setloc'
+    - '&7no seu terreno.'
+    - ''
+    - '&7Todos os dias, você pode'
+    - '&7avaliar uma loja dando-lhe'
+    - '&fuma estrela§&!'
+  slot: 49
+  glow: false
+stores:
+  material: '397:3'
+  display-name: '<ranked> &aLoja de <name>'
+  lore:
+    - '&7Faça compras na loja'
+    - '&7deste jogador!'
+    - ''
+    - ' &fEstrelas: &7<stars>'
+    - ' &fVisitantes: &7<visits>'
+    - ''
+    - '&fClique esquerdo: &7ir.'
+    - '&fClique direito: &7dar estrela.'
+  glow: false
