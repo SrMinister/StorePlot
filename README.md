@@ -11,11 +11,11 @@ localizada na pasta "libs" para garantir o funcionamento correto.
 
 
 # Recursos:
- # Mysql/MariaDB: ❌
- # Integração com PlotSquared: ✅
- # Menu configurável: ✅
- # Mensagem configurável: ✅
- # Versão: 1.8 ✅
+  Mysql/MariaDB: ❌
+  Integração com PlotSquared: ✅
+  Menu configurável: ✅
+  Mensagem configurável: ✅
+  Versão: 1.8 ✅
  
 
 
