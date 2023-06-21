@@ -1,6 +1,6 @@
 # Sitema de Loja Plot
 
-Sistema 100% baseado no sistema da RedeScreen, com código fonte público.
+Sistema __100%__ baseado no sistema da __RedeScreen__, com código fonte público.
 Caso queira adicionar um banco de dados ou fazer alterações, utilize a biblioteca
 localizada na pasta "libs" para garantir o funcionamento correto.
 
