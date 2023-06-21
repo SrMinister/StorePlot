@@ -14,13 +14,13 @@ localizada na pasta "libs" para garantir o funcionamento correto.
 
 Mysql/MariaDB: ❌
  
-Integração com PlotSquared: ✅
+- [x] Integração com PlotSquared 
  
-Menu configurável: ✅
+- [x] Menu configurável 
  
-Mensagem configurável: ✅
+- [x] Mensagem configurável  
 
-Versão: 1.8 ✅
+- [x] Versão: 1.8 
  
 
 
