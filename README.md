@@ -6,7 +6,8 @@ localizada na pasta "libs" para garantir o funcionamento correto.
 
 # Imagens:
 
-![Sistema][(https://i.imgur.com/PPJZEUb.png)]
+![Sistema](https://i.imgur.com/PPJZEUb.png)
+
 
 
 # Recursos:
