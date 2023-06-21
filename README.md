@@ -2,7 +2,7 @@
 
 Sistema __100%__ baseado no sistema da __RedeScreen__, com código fonte público.
 Caso queira adicionar um banco de dados ou fazer alterações, utilize a biblioteca
-localizada na pasta "libs" para garantir o funcionamento correto.
+localizada na pasta __"libs"__ para garantir o funcionamento correto.
 
 # Imagens:
 
