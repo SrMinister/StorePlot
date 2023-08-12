@@ -1,3 +1,10 @@
+mysql:
+  host: 127.0.0.1
+  port: 3306
+  database: hyren
+  username: root
+  password: l8ff937&G4CkECQ&
+
 information:
   material: '397:3'
   head-texture: 'd01afe973c5482fdc71e6aa10698833c79c437f21308ea9a1a095746ec274a0f'

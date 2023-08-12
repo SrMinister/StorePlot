@@ -53,12 +53,12 @@ public class StoresView extends View {
                 click.close();
 
                 if (click.getClickOrigin().isLeftClick()) {
-                    click.getPlayer().chat("/lojas ir " + users.get(finalIndex).getUsername());
+                    click.getPlayer().chat("/lojas ir " + users.get(finalIndex).getName());
                     return;
                 }
 
                 if (click.getClickOrigin().isRightClick()) {
-                    if (users.get(finalIndex).getUsername().equalsIgnoreCase(click.getPlayer().getName())) {
+                    if (users.get(finalIndex).getName().equalsIgnoreCase(click.getPlayer().getName())) {
                         MessageProvider.provide(click.getPlayer(), "self-evaluation");
                         return;
                     }
@@ -67,13 +67,13 @@ public class StoresView extends View {
                         user.setTime(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1));
 
                         MessageProvider.provide(click.getPlayer(), "evaluation", ImmutableMap.of(
-                                "<user>", users.get(finalIndex).getUsername(),
+                                "<user>", users.get(finalIndex).getName(),
                                 "<stars>", NumberFormatter.format(users.get(finalIndex).getStores().getStars())));
                         return;
                     }
 
                     MessageProvider.provide(click.getPlayer(), "evaluation-time", ImmutableMap.of(
-                            "<time>", user.getTime()));
+                            "<time>", user.getTimeFormat()));
                 }
             });
         }
@@ -93,10 +93,10 @@ public class StoresView extends View {
         return new ItemBuilder(provideItem("stores",
                 ImmutableMap.of(
                         "<ranked>", ranked,
-                        "<name>", user.getUsername(),
+                        "<name>", user.getName(),
                         "<stars>", NumberFormatter.format(user.getStores().getStars()),
                         "<visits>", NumberFormatter.format(user.getStores().getVisits()))))
-                .skull(user.getUsername())
+                .skull(user.getName())
                 .build();
     }
 

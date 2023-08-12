@@ -1,19 +1,20 @@
 package net.hyren.stores.data;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import net.hyren.stores.data.store.Stores;
 import net.hyren.stores.misc.TimeUtils;
 
 @Data
-@Builder
+@AllArgsConstructor
 public class User {
 
-    private final String username;
+    private final String name;
     private long time;
     private Stores stores;
 
-    public String getTime() {
+    public String getTimeFormat() {
         return TimeUtils.format(time - System.currentTimeMillis());
     }
 

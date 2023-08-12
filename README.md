@@ -12,7 +12,7 @@ localizada na pasta __"libs"__ para garantir o funcionamento correto.
 
 # Recursos:
 
- - [ ] Mysql/MariaDB
+ - [x] Mysql
  
 - [x] Integração com PlotSquared 
  

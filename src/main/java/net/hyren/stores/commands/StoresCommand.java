@@ -4,9 +4,9 @@ import com.google.common.collect.ImmutableMap;
 import com.intellectualcrafters.plot.object.PlotPlayer;
 import lombok.RequiredArgsConstructor;
 import net.hyren.core.misc.serializer.LocationSerializer;
-import net.hyren.stores.StoresPlugin;
 import net.hyren.stores.configuration.provider.MessageProvider;
 import net.hyren.stores.data.User;
+import net.hyren.stores.provider.SpigotProvider;
 import net.hyren.stores.view.StoresView;
 import network.twisty.core.misc.commands.annotation.Command;
 import network.twisty.core.misc.commands.command.Context;
@@ -15,9 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @RequiredArgsConstructor
-public class StoresCommand {
-
-    private final StoresPlugin plugin;
+public class StoresCommand extends SpigotProvider {
 
     @Command(
             name = "stores",
@@ -35,7 +33,7 @@ public class StoresCommand {
 
     public void executeSetLoc(Context<CommandSender> context) {
         final Player player = (Player) context.getSender();
-        final User user = plugin.getUserCache().getByUsername(player.getName());
+        final User user = userCache.getByUsername(player.getName());
         final PlotPlayer plotPlayer = PlotPlayer.wrap(player.getPlayer());
 
         if (user.getStores().getLocation() != null) {
@@ -47,7 +45,7 @@ public class StoresCommand {
             if (plotPlayer.getCurrentPlot().isOwner(player.getPlayer().getUniqueId())) {
                 MessageProvider.provide(player, "set");
 
-                final String location = LocationSerializer.serialize(player.getLocation(), true);
+                final String location = LocationSerializer.serialize(player.getLocation(), false);
                 user.getStores().setLocation(location);
                 return;
             }
@@ -65,7 +63,7 @@ public class StoresCommand {
     public void executeRemove(Context<CommandSender> context) {
         final Player player = (Player) context.getSender();
 
-        final User user = plugin.getUserCache().getByUsername(player.getName());
+        final User user = userCache.getByUsername(player.getName());
         if (user.getStores().getLocation() != null) {
             user.getStores().setLocation(null);
             MessageProvider.provide(player, "remove");
@@ -80,20 +78,20 @@ public class StoresCommand {
 
     public void executeLoc(Context<CommandSender> context, OfflinePlayer target) {
         final Player player = (Player) context.getSender();
-        final User user = plugin.getUserCache().getByUsername(target.getName());
+        final User user = userCache.getByUsername(target.getName());
 
         if (user.getStores().getLocation() == null) {
             MessageProvider.provide(player, "no-store");
             return;
         }
 
-        if (user.getUsername().equalsIgnoreCase(player.getName())) {
+        if (user.getName().equalsIgnoreCase(player.getName())) {
             MessageProvider.provide(player, "own-store");
             player.teleport(LocationSerializer.deserialize(user.getStores().getLocation()));
             return;
         }
 
-        MessageProvider.provide(player, "visit", ImmutableMap.of("<user>", user.getUsername()));
+        MessageProvider.provide(player, "visit", ImmutableMap.of("<user>", user.getName()));
 
         user.getStores().addVisits(1);
         player.teleport(LocationSerializer.deserialize(user.getStores().getLocation()));

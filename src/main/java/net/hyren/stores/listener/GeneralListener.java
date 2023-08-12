@@ -6,29 +6,29 @@ import lombok.var;
 import net.hyren.stores.StoresPlugin;
 import net.hyren.stores.data.User;
 import net.hyren.stores.data.store.Stores;
+import net.hyren.stores.provider.SpigotProvider;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 @RequiredArgsConstructor
-public class GeneralListener implements Listener {
+public class GeneralListener extends SpigotProvider {
 
-    private final StoresPlugin plugin;
 
     @EventHandler
-
     public void on(PlayerJoinEvent event) {
-        var player = event.getPlayer();
+        final Player player = event.getPlayer();
 
-        plugin.getUserCache().addCachedElement(
-                User.builder()
-                        .username(player.getName())
-                        .stores(Stores.builder()
-                                .stars(0)
-                                .visits(0)
-                                .location(null)
-                                .build())
-                        .build()
-        );
+        userController.create(player);
+
+    }
+
+    @EventHandler
+    public void on(PlayerQuitEvent event) {
+        final Player player = event.getPlayer();
+
+        userController.remove(player);
     }
 }

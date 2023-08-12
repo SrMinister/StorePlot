@@ -3,7 +3,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "6.1.0"
 }
 
-group = "net.hyren"
+group = "com.github.kaiquy"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -41,7 +41,7 @@ tasks {
     java {
         shadowJar {
             archiveFileName.set("spigot-store-1.0-SNAPSHOT.jar")
-            destinationDirectory.set(file("C:/Users/kaiquy/Desktop/Server - Minecraft/plugins"))
+            destinationDirectory.set(file("C:/Users/kaiqu/Desktop/1.8/plugins"))
         }
     }
 }

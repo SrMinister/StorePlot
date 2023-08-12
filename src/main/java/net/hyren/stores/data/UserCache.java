@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 
 public class UserCache extends Cache<User> {
 
-    public User getByUsername(String username) {
-        return getCached(user -> user.getUsername().equalsIgnoreCase(username));
+    public User getByUsername(String name) {
+        return getCached(user -> user.getName().equalsIgnoreCase(name));
     }
 
     public List<User> getRanked() {
