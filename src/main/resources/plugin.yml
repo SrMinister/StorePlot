@@ -1,4 +1,4 @@
 name: store-spigot
-main: net.hyren.stores.StoresPlugin
+main: com.github.srminister.stores.StoresPlugin
 author: Kaiquy
 version: 1.0
