@@ -1,6 +1,6 @@
 package com.github.srminister.stores.configuration.adapter;
 
-import net.hyren.core.utils.ItemBuilder;
+import com.github.srminister.stores.utils.ItemBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;

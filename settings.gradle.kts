@@ -1,2 +1,2 @@
-rootProject.name = "spigot-stores"
+rootProject.name = "StorePlot"
 

@@ -1,108 +1,125 @@
 package com.github.srminister.stores.view;
 
-import com.github.srminister.stores.data.User;
-import com.google.common.collect.ImmutableMap;
-import net.hyren.core.utils.ItemBuilder;
-import net.hyren.core.utils.NumberFormatter;
 import com.github.srminister.stores.StoresPlugin;
 import com.github.srminister.stores.configuration.provider.MessageProvider;
-import network.twisty.core.misc.inventory.*;
+import com.github.srminister.stores.misc.store.Store;
+import com.github.srminister.stores.misc.store.StoreCache;
+import com.github.srminister.stores.utils.ItemBuilder;
+import com.github.srminister.stores.utils.NumberFormatter;
+import com.google.common.collect.ImmutableMap;
+import lombok.RequiredArgsConstructor;
+import me.devnatan.inventoryframework.View;
+import me.devnatan.inventoryframework.ViewConfigBuilder;
+import me.devnatan.inventoryframework.component.Pagination;
+import me.devnatan.inventoryframework.context.RenderContext;
+import me.devnatan.inventoryframework.state.State;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static com.github.srminister.stores.configuration.provider.ItemProvider.getItemSlot;
 import static com.github.srminister.stores.configuration.provider.ItemProvider.provideItem;
 
+@RequiredArgsConstructor
 public class StoresView extends View {
+
     private final StoresPlugin plugin;
+    private final State<StoreCache> userState = initialState("userCache");
 
-    private final int[] SLOTS = new int[]{
-            11, 12, 13, 14, 15,
-            20, 21, 22, 23, 24,
-            29, 30, 31, 32, 33
-    };
+    private final State<Pagination> paginationState = lazyPaginationState(
+            (context) -> stores(),
+            (context, item, index, store) -> item.withItem(
+                    new ItemBuilder(provideItem("stores",
+                            ImmutableMap.of(
+                                    "<ranked>", Integer.toString(index),
+                                    "<name>", store.getName(),
+                                    "<stars>", NumberFormatter.format(store.getStars()),
+                                    "<visits>", NumberFormatter.format(store.getVisits()))))
+                            .skullOwner(store.getName())
+                            .build()
+            ).onClick(click -> {
+                final StoreCache storeCache = userState.get(click);
+                final Store user = storeCache.getByUser(click.getPlayer().getName());
 
-    public StoresView(StoresPlugin plugin) {
-        super(6, "Lojas");
-        this.plugin = plugin;
+                if (click.isLeftClick()) {
+                    click.getPlayer().chat("/lojas ir " + store.getName());
+                    return;
+                }
 
-        setCancelOnClick(true);
-        setCancelOnPickup(true);
+                if (store.getName().equalsIgnoreCase(click.getPlayer().getName())) {
+                    MessageProvider.provide(click.getPlayer(), "self-evaluation");
+                    return;
+                }
+
+                if (user.isExpired()) {
+                    store.addStars(1);
+                    user.setTime(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1));
+
+                    MessageProvider.provide(click.getPlayer(), "evaluation",
+                            ImmutableMap.of(
+                            "<user>", store.getName(),
+                            "<stars>", NumberFormatter.format(store.getStars()))
+                    );
+                    return;
+                }
+
+                MessageProvider.provide(click.getPlayer(), "evaluation-time",
+                        ImmutableMap.of(
+                        "<time>", user.getTimeFormat())
+                );
+            })
+    );
+
+    @Override
+    public void onInit(@NotNull ViewConfigBuilder config) {
+        config.title("Lojas")
+                .size(6)
+                .layout(
+                        "         ",
+                        "  OOOOO  ",
+                        "  OOOOO  ",
+                        "  OOOOO  ",
+                        "         ",
+                        "         "
+                )
+                .cancelOnDrag()
+                .cancelOnPickup()
+                .cancelOnClick()
+                .cancelOnDrop();
     }
 
     @Override
-    protected void onRender(ViewContext context) {
-        List<User> users = plugin.getUserCache().getRanked();
+    public void onFirstRender(@NotNull RenderContext render) {
+        final Pagination pagination = paginationState.get(render);
 
-        context.slot(
+        render.slot(
                 getItemSlot("information"),
                 new ItemBuilder(
                         provideItem("information", ImmutableMap.of()))
                         .build());
 
-        for (int index = 0; index < 15; index++) {
-            if ((index + 1) > users.size()) continue;
+        render.slot(18, new ItemBuilder(Material.ARROW)
+                        .name("§aPágina anterior")
+                        .build())
+                .displayIf(pagination::canBack)
+                .onClick(pagination::back);
 
-            final ItemStack userItem = userItem(users.get(index));
-            int finalIndex = index;
-            context.slot(SLOTS[index]).onRender(item -> item.setItem(userItem)).onClick(click -> {
-                final User user = plugin.getUserCache().getByUsername(click.getPlayer().getName());
-                click.close();
-
-                if (click.getClickOrigin().isLeftClick()) {
-                    click.getPlayer().chat("/lojas ir " + users.get(finalIndex).getName());
-                    return;
-                }
-
-                if (click.getClickOrigin().isRightClick()) {
-                    if (users.get(finalIndex).getName().equalsIgnoreCase(click.getPlayer().getName())) {
-                        MessageProvider.provide(click.getPlayer(), "self-evaluation");
-                        return;
-                    }
-                    if (user.isExpired()) {
-                        users.get(finalIndex).getStores().addStars(1);
-                        user.setTime(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1));
-
-                        MessageProvider.provide(click.getPlayer(), "evaluation", ImmutableMap.of(
-                                "<user>", users.get(finalIndex).getName(),
-                                "<stars>", NumberFormatter.format(users.get(finalIndex).getStores().getStars())));
-                        return;
-                    }
-
-                    MessageProvider.provide(click.getPlayer(), "evaluation-time", ImmutableMap.of(
-                            "<time>", user.getTimeFormat()));
-                }
-            });
-        }
-
-        for (int slot : SLOTS) {
-            final ViewItem item = context.getItem(slot);
-            if (item == null) context.slot(slot).onRender(empty -> empty.setItem(emptyItem()));
-        }
+        render.slot(26, new ItemBuilder(Material.ARROW)
+                        .name("§aPróxima página")
+                        .build())
+                .displayIf(pagination::canAdvance)
+                .onClick(pagination::advance);
     }
 
-    private ItemStack userItem(User user) {
-        List<User> ranking = plugin.getUserCache().getRanked();
 
-        final String ranked = ranking.get(0) != null && user.equals(ranking.get(0)) ?
-                "§e§lPOPULAR!" : "";
-
-        return new ItemBuilder(provideItem("stores",
-                ImmutableMap.of(
-                        "<ranked>", ranked,
-                        "<name>", user.getName(),
-                        "<stars>", NumberFormatter.format(user.getStores().getStars()),
-                        "<visits>", NumberFormatter.format(user.getStores().getVisits()))))
-                .skull(user.getName())
-                .build();
-    }
-
-    private ItemStack emptyItem() {
-        return new ItemBuilder(Material.SKULL_ITEM, 1, 3)
-                .name("§8Vazio")
-                .build();
+    public List<Store> stores() {
+        return plugin.getStoreCache().getCachedElements()
+                .stream()
+                .filter(user -> user.getLocation() != null)
+                .sorted((a, b) -> Integer.compare(b.getStars(), a.getStars()))
+                .collect(Collectors.toList());
     }
 }

@@ -8,12 +8,12 @@ import java.sql.SQLException;
 
 public class MySQLProvider {
 
-    private static final String CREATE_QUERY = "CREATE TABLE IF NOT EXISTS `store_plot` (" +
+    private static final String CREATE_QUERY = "CREATE TABLE IF NOT EXISTS store_plot (" +
             "user_name CHAR(36) NOT NULL PRIMARY KEY, " +
-            "time BIGINT NOT NULL, " +
+            "time LONGBLOB NOT NULL, " +
             "stars INTEGER NOT NULL, " +
             "visits INTEGER NOT NULL, " +
-            "location VARCHAR(64)" +
+            "location TEXT" +
             ");";
 
     protected final HikariDataSource source = new HikariDataSource();

@@ -1,13 +1,13 @@
 mysql:
   host: 127.0.0.1
   port: 3306
-  database: hyren
-  username: root
-  password: l8ff937&G4CkECQ&
+  database: "hyren"
+  username: "root"
+  password: ""
 
 information:
   material: '397:3'
-  head-texture: 'd01afe973c5482fdc71e6aa10698833c79c437f21308ea9a1a095746ec274a0f'
+  head-texture: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDAxYWZlOTczYzU0ODJmZGM3MWU2YWExMDY5ODgzM2M3OWM0MzdmMjEzMDhlYTlhMWEwOTU3NDZlYzI3NGEwZiJ9fX0='
   display-name: '&eInformações'
   lore:
     - '&7Para colocar a sua loja aqui,'

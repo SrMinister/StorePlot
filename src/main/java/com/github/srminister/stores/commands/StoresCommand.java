@@ -1,42 +1,54 @@
 package com.github.srminister.stores.commands;
 
-import com.github.srminister.stores.data.User;
-import com.github.srminister.stores.provider.SpigotProvider;
+import com.github.srminister.stores.StoresPlugin;
+import com.github.srminister.stores.configuration.provider.MessageProvider;
+import com.github.srminister.stores.misc.store.Store;
+import com.github.srminister.stores.misc.store.StoreCache;
+import com.github.srminister.stores.misc.store.SimpleLocation;
+import com.github.srminister.stores.view.StoresView;
 import com.google.common.collect.ImmutableMap;
 import com.intellectualcrafters.plot.object.PlotPlayer;
 import lombok.RequiredArgsConstructor;
-import net.hyren.core.misc.serializer.LocationSerializer;
-import com.github.srminister.stores.configuration.provider.MessageProvider;
-import com.github.srminister.stores.view.StoresView;
-import network.twisty.core.misc.commands.annotation.Command;
-import network.twisty.core.misc.commands.command.Context;
+import me.saiintbrisson.minecraft.command.annotation.Command;
+import me.saiintbrisson.minecraft.command.command.Context;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @RequiredArgsConstructor
-public class StoresCommand extends SpigotProvider {
+public class StoresCommand {
+
+    private final StoresPlugin plugin;
+    private final StoreCache storeCache;
 
     @Command(
-            name = "stores",
+            name = "loja",
             aliases = {"lojas"}
     )
 
     public void execute(Context<CommandSender> context) {
         final Player player = (Player) context.getSender();
-        plugin.getDefaultRegistry().getViewFrame().open(StoresView.class, player);
+
+        plugin.getViewFrame().open(
+                StoresView.class,
+                player,
+                ImmutableMap.of(
+                        "userCache",
+                        storeCache
+                )
+        );
     }
 
     @Command(
-            name = "stores.setloc"
+            name = "loja.setloc"
     )
 
     public void executeSetLoc(Context<CommandSender> context) {
         final Player player = (Player) context.getSender();
-        final User user = userCache.getByUsername(player.getName());
+        final Store store = storeCache.getByUser(player.getName());
         final PlotPlayer plotPlayer = PlotPlayer.wrap(player.getPlayer());
 
-        if (user.getStores().getLocation() != null) {
+        if (store.getLocation() != null) {
             MessageProvider.provide(player, "already-set");
             return;
         }
@@ -45,8 +57,8 @@ public class StoresCommand extends SpigotProvider {
             if (plotPlayer.getCurrentPlot().isOwner(player.getPlayer().getUniqueId())) {
                 MessageProvider.provide(player, "set");
 
-                final String location = LocationSerializer.serialize(player.getLocation(), false);
-                user.getStores().setLocation(location);
+                store.setLocation(SimpleLocation.fromLocation(player.getLocation())
+                        .toString());
                 return;
             }
             MessageProvider.provide(player, "not-owner");
@@ -57,15 +69,15 @@ public class StoresCommand extends SpigotProvider {
 
 
     @Command(
-            name = "stores.removeloc"
+            name = "loja.removeloc"
     )
 
     public void executeRemove(Context<CommandSender> context) {
         final Player player = (Player) context.getSender();
 
-        final User user = userCache.getByUsername(player.getName());
-        if (user.getStores().getLocation() != null) {
-            user.getStores().setLocation(null);
+        final Store store = storeCache.getByUser(player.getName());
+        if (store.getLocation() != null) {
+            store.setLocation(null);
             MessageProvider.provide(player, "remove");
             return;
         }
@@ -73,27 +85,31 @@ public class StoresCommand extends SpigotProvider {
     }
 
     @Command(
-            name = "stores.ir"
+            name = "loja.ir"
     )
 
     public void executeLoc(Context<CommandSender> context, OfflinePlayer target) {
         final Player player = (Player) context.getSender();
-        final User user = userCache.getByUsername(target.getName());
+        final Store store = storeCache.getByUser(target.getName());
 
-        if (user.getStores().getLocation() == null) {
+        if (store.getLocation() == null) {
             MessageProvider.provide(player, "no-store");
             return;
         }
 
-        if (user.getName().equalsIgnoreCase(player.getName())) {
+        if (store.getName().equalsIgnoreCase(player.getName())) {
             MessageProvider.provide(player, "own-store");
-            player.teleport(LocationSerializer.deserialize(user.getStores().getLocation()));
+
+            final SimpleLocation location = SimpleLocation.fromString(store.getLocation());
+            player.teleport(location.toLocation());
             return;
         }
 
-        MessageProvider.provide(player, "visit", ImmutableMap.of("<user>", user.getName()));
+        MessageProvider.provide(player, "visit", ImmutableMap.of("<user>", store.getName()));
 
-        user.getStores().addVisits(1);
-        player.teleport(LocationSerializer.deserialize(user.getStores().getLocation()));
+        store.addVisits(1);
+
+        final SimpleLocation location = SimpleLocation.fromString(store.getLocation());
+        player.teleport(location.toLocation());
     }
 }

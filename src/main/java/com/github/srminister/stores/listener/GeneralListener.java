@@ -1,28 +1,32 @@
 package com.github.srminister.stores.listener;
 
+import com.github.srminister.stores.misc.store.Store;
+import com.github.srminister.stores.misc.store.StoreCache;
+import com.github.srminister.stores.misc.store.StoreStorage;
 import lombok.RequiredArgsConstructor;
-import com.github.srminister.stores.provider.SpigotProvider;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 @RequiredArgsConstructor
-public class GeneralListener extends SpigotProvider {
+public class GeneralListener implements Listener {
 
+    private final StoreCache storeCache;
+    private final StoreStorage storeStorage;
 
     @EventHandler
-    public void on(PlayerJoinEvent event) {
-        final Player player = event.getPlayer();
-
-        userController.create(player);
+    void onJoin(PlayerJoinEvent event) {
+        storeStorage.load(event.getPlayer().getName());
 
     }
 
     @EventHandler
-    public void on(PlayerQuitEvent event) {
-        final Player player = event.getPlayer();
+    void onQuit(PlayerQuitEvent event) {
+        final Store store = storeCache.getByUser(event.getPlayer().getName());
 
-        userController.remove(player);
+        if (store == null) return;
+
+        storeStorage.upsert(store);
     }
 }
